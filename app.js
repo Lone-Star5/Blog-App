@@ -37,6 +37,15 @@ app.get("/blogs/new", function(req, res){
 	res.render("new");
 })
 
+app.get("/blogs/:id", function(req, res){
+	Blog.findById(req.params.id, function(err, foundBlog){
+		if(err)
+			res.redirect("/blogs");
+		else
+			res.render("show", {blog:foundBlog});
+	})
+})
+
 app.post("/blogs", function(req, res){
 	Blog.create(req.body.blog, function(err, newBlog){
 		if(err)
