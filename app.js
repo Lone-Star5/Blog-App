@@ -2,9 +2,11 @@ const express = require("express");
 const app = express();
 const bodyParser = require("body-parser")
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(methodOverride("_method"));
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -46,6 +48,15 @@ app.get("/blogs/:id", function(req, res){
 	})
 })
 
+app.get("/blogs/:id/edit", function(req, res){
+Blog.findById(req.params.id, function(err, foundBlog){
+	if(err)
+		res.redirect("/blogs")
+	else
+		res.render("edit", {blog:foundBlog})
+	})
+})
+
 app.post("/blogs", function(req, res){
 	Blog.create(req.body.blog, function(err, newBlog){
 		if(err)
@@ -55,7 +66,14 @@ app.post("/blogs", function(req, res){
 	})
 });
 
-
+app.put("/blogs/:id", function(req, res){
+	Blog.findByIdAndUpdate(req.params.id, req.body.blog, function(err, updatedBlog){
+		if(err)
+			res.redirect("/blogs");
+		else
+			res.redirect("/blogs/"+req.params.id);
+	})
+})
 
 app.listen(3000, function(){
 	console.log("Server Started ...")
