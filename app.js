@@ -75,6 +75,15 @@ app.put("/blogs/:id", function(req, res){
 	})
 })
 
+app.delete("/blogs/:id", function(req, res){
+	Blog.findByIdAndRemove(req.params.id, function(err){
+		if(err)
+			res.redirect("/blogs");
+		else
+			res.redirect("/blogs");
+	})
+})
+
 app.listen(3000, function(){
 	console.log("Server Started ...")
 });
